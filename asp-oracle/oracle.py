@@ -1,29 +1,22 @@
 import clingo
 import clingo.ast
-# from clingo.symbol import Number
-# from clingo.control import Control
-
-# class Context:
-#     def inc(self, x):
-#         return Number(x.number + 1)
-#     def seq(self, x, y):
-#         return [x, y]
-
-# def on_model(m):
-#     print (m)
-
-# ctl = Control()
-# ctl.add("base", [], """\
-# p(@inc(10)).
-# q(@seq(1,2)).
-# """)
-# ctl.ground([("base", [])], context=Context())
-# print(ctl.solve(on_model=on_model))
 
 
+def storeModel(model,output):
+    l = model.symbols(atoms=True)
+    for atom in l:
+        if atom.name == "theedge":
+            assert(len(atom.arguments) == 2)
+            eu = atom.arguments[0]
+            ev = atom.arguments[1]
+            output.append((str(eu),str(ev)))
+
+with open("semiorder.lp",'r') as f:
+    storedConstraints = f.read()
 def collectDefaultConstraints():
     with open("semiorder.lp",'r') as f:
-        total = f.read()
+#        total = f.read()
+        total = storedConstraints
     return total
 
 def computeSchedule(graph):
@@ -34,15 +27,15 @@ def computeSchedule(graph):
 
     ctl.ground([('base', [])])
     #output = defaultdict(lambda: defaultdict(list))
-    output = dict()
+    output = []
     #print(ctl.solve(on_model=print))
     result = ctl.solve(on_model=lambda m: storeModel(m, output))
     if result.satisfiable:
         return output
-        print(output)
-        pass
+#        print(output)
+#        pass
     elif result.satisfiable is False:
-        print(False)
+#        print(False)
         return False
     else:
         print("???")
