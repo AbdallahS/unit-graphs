@@ -1,0 +1,129 @@
+#ground nbVertices[7].
+#ground track[1..2].
+
+nbVertices[N] :: #ground vertex[1..N].
+
+vertex[U], vertex[V], U < V :: #ground edgeDom[U,V].
+
+edgeDom[U,V] :: #exists[0] edge(U,V).
+
+vertex[U], vertex[V], U!=V :: #ground semiOrderDom[U,V].
+track[T], semiOrderDom[U,V] :: #ground trackedSemiOrderDom[T,U,V].
+trackedSemiOrderDom[T,U,V] :: #forall[1] trackedSemiOrder(T,U,V).
+
+
+%Theorem 2.9 (Scott and Suppes [SS58]) A partial order relation S defined on V is a semiorder
+%if the following conditions hold:
+%1. S is irreflexive.
+%2. (x, y) ∈ S and (z, w) ∈ S imply (x, w) ∈ S or (z, y) ∈ S.
+%3. (x, y) ∈ S and (y, z) ∈ S imply (x, w) ∈ S or (w, z) ∈ S.
+
+%cheat(semiorder) | cheat(edge).
+%cheat(semiorder) -> cheat(asymmetry) | cheat(transitive) | cheat(pattern).
+%cheat(pattern)    -> cheat(twotwo) | cheat(threeone).
+%cheat(edge)       -> edgeDom[U,V] : cheat_absentedge(U,V) | edgeDom[U,V] : cheat_spuriousedge(U,V).
+
+#exists[2] cheat(asymmetry), cheat(transitive), cheat(twotwo), cheat(threeone).
+%, cheat(pattern), cheat(semiorder), cheat(edge).
+
+  cheat(asymmetry)
+| cheat(transitive)
+| cheat_twotwoDomF[T,U,V,W,X]  :  cheat_twotwoF(T,U,V,W,X)%cheat(twotwo)
+| cheat_threeoneDom[T,U,V,W,X] : cheat_threeone(T,U,V,W,X)%cheat(threeone)
+| edgeDom[U,V] : cheat_absentedge(U,V)
+| edgeDom[U,V] : cheat_spuriousedge(U,V).
+
+trackedSemiOrderDom[T,U,V], U < V :: #ground cheat_asymmetryDom[T,U,V].
+cheat_asymmetryDom[T,U,V] :: #exists[2] cheat_asymmetry(T,U,V).
+cheat_asymmetryDom[T,U,V] :: cheat_asymmetry(T,U,V) -> trackedSemiOrder(T,U,V).
+cheat_asymmetryDom[T,U,V] :: cheat_asymmetry(T,U,V) -> trackedSemiOrder(T,V,U).
+cheat(asymmetry)  -> cheat_asymmetryDom[T,U,V]    : cheat_asymmetry(T,U,V).
+
+trackedSemiOrderDom[T,U,V], trackedSemiOrderDom[T,V,W], trackedSemiOrderDom[T,U,W] :: #ground cheat_transitiveDom[T,U,V,W].
+cheat_transitiveDom[T,U,V,W] :: #exists[2] cheat_transitive(T,U,V,W).
+cheat_transitiveDom[T,U,V,W] :: cheat_transitive(T,U,V,W) ->  trackedSemiOrder(T,U,V).
+cheat_transitiveDom[T,U,V,W] :: cheat_transitive(T,U,V,W) ->  trackedSemiOrder(T,V,W).
+cheat_transitiveDom[T,U,V,W] :: cheat_transitive(T,U,V,W) -> ~trackedSemiOrder(T,U,W).
+cheat(transitive) -> cheat_transitiveDom[T,U,V,W] : cheat_transitive(T,U,V,W).
+
+%trackedSemiOrderDom[T,U,V], trackedSemiOrderDom[T,W,X], trackedSemiOrderDom[T,U,W], trackedSemiOrderDom[T,U,X], trackedSemiOrderDom[T,V,W], trackedSemiOrderDom[T,V,X], U < W :: #ground cheat_twotwoDom[T,1,U,V], cheat_twotwoDom[T,2,U,X], cheat_twotwoDom[T,3,V,W], cheat_twotwoDom[T,4,W,X].
+%cheat_twotwoDom[T,1,U,V] :: #exists[2] cheat_twotwo(T,1,U,V).
+%cheat_twotwoDom[T,2,U,X] :: #exists[2] cheat_twotwo(T,2,U,X).
+%cheat_twotwoDom[T,3,V,W] :: #exists[2] cheat_twotwo(T,3,V,W).
+%cheat_twotwoDom[T,4,W,X] :: #exists[2] cheat_twotwo(T,4,W,X).
+%cheat_twotwoDom[T,1,U,V] :: cheat_twotwo(T,1,U,V) ->  trackedSemiOrder(T,U,V).
+%cheat_twotwoDom[T,2,U,X] :: cheat_twotwo(T,2,U,X) -> ~trackedSemiOrder(T,U,X).
+%cheat_twotwoDom[T,3,V,W] :: cheat_twotwo(T,3,V,W) -> ~trackedSemiOrder(T,W,V).
+%cheat_twotwoDom[T,4,W,X] :: cheat_twotwo(T,4,W,X) ->  trackedSemiOrder(T,W,X).
+%cheat(twotwo)     -> cheat_twotwoDom[T,1,U,V]   : cheat_twotwo(T,1,U,V).
+%cheat(twotwo)     -> cheat_twotwoDom[T,2,U,X]   : cheat_twotwo(T,2,U,X).
+%cheat(twotwo)     -> cheat_twotwoDom[T,3,V,W]   : cheat_twotwo(T,3,V,W).
+%cheat(twotwo)     -> cheat_twotwoDom[T,4,W,X]   : cheat_twotwo(T,4,W,X).
+%cheat_twotwoDom[T,1,U,V] :: cheat_twotwo(T,1,U,V) -> cheat_twotwoDom[T,2,U,X] : cheat_twotwo(T,2,U,X).
+%cheat_twotwoDom[T,1,U,V] :: cheat_twotwo(T,1,U,V) -> cheat_twotwoDom[T,3,V,W] : cheat_twotwo(T,3,V,W).
+%cheat_twotwoDom[T,2,U,X], cheat_twotwoDom[T,3,V,W] :: cheat_twotwo(T,2,U,X) & cheat_twotwo(T,3,V,W) -> cheat_twotwoDom[T,4,W,X] : cheat_twotwo(T,4,W,X).
+%cheat_twotwoDom[T,2,U,X], cheat_twotwoDom[T,3,V,W] :: cheat_twotwo(T,2,U,X) & cheat_twotwo(T,3,V,W) -> cheat_twotwoDom[T,1,U,V] : cheat_twotwo(T,1,U,V).
+%cheat_twotwoDom[T,1,U,V], cheat_twotwoDom[T,2,U,X], cheat_twotwoDom[T,3,V,W] :: cheat_twotwo(T,1,U,V) & cheat_twotwo(T,2,U,X) & cheat_twotwo(T,3,V,W) -> cheat_twotwoDom[T,4,W,X] : cheat_twotwo(T,4,W,X).
+
+trackedSemiOrderDom[T,U,V], trackedSemiOrderDom[T,W,X], trackedSemiOrderDom[T,U,W], trackedSemiOrderDom[T,U,X], trackedSemiOrderDom[T,V,W], trackedSemiOrderDom[T,V,X], U < W :: #ground cheat_twotwoDomF[T,U,V,W,X].
+cheat_twotwoDomF[T,U,V,W,X] :: #exists[2] cheat_twotwoF(T,U,V,W,X).
+%cheat(twotwo)     -> cheat_twotwoDomF[T,U,V,W,X]   : cheat_twotwoF(T,U,V,W,X).
+%cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) -> cheat_twotwo(T,1,U,V).
+%cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) -> cheat_twotwo(T,2,U,X).
+%cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) -> cheat_twotwo(T,3,V,W).
+%cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) -> cheat_twotwo(T,4,W,X).
+
+cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) ->  trackedSemiOrder(T,U,V).
+cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) -> ~trackedSemiOrder(T,U,X).
+cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) -> ~trackedSemiOrder(T,W,V).
+cheat_twotwoDomF[T,U,V,W,X] :: cheat_twotwoF(T,U,V,W,X) ->  trackedSemiOrder(T,W,X).
+
+
+trackedSemiOrderDom[T,U,V], trackedSemiOrderDom[T,W,X], trackedSemiOrderDom[T,U,W], trackedSemiOrderDom[T,U,X], trackedSemiOrderDom[T,V,W], trackedSemiOrderDom[T,V,X] :: #ground cheat_threeoneDom[T,U,V,W,X].
+cheat_threeoneDom[T,U,V,W,X] :: #exists[2] cheat_threeone(T,U,V,W,X).
+%cheat(threeone)   -> cheat_threeoneDom[T,U,V,W,X] : cheat_threeone(T,U,V,W,X).
+cheat_threeoneDom[T,U,V,W,X] :: cheat_threeone(T,U,V,W,X) ->  trackedSemiOrder(T,U,V).
+cheat_threeoneDom[T,U,V,W,X] :: cheat_threeone(T,U,V,W,X) -> ~trackedSemiOrder(T,U,X).
+cheat_threeoneDom[T,U,V,W,X] :: cheat_threeone(T,U,V,W,X) ->  trackedSemiOrder(T,V,W).
+cheat_threeoneDom[T,U,V,W,X] :: cheat_threeone(T,U,V,W,X) -> ~trackedSemiOrder(T,X,W).
+
+edgeDom[U,V] :: #exists[2] cheat_absentedge(U,V).
+edgeDom[U,V] :: #exists[2] cheat_spuriousedge(U,V).
+
+% Theorem 2.8 (Roberts [Rob69])
+% There is a semiorder on S(V, P ) on the vertices of V such that (u, w) ∈ P ⇔ (u, w) not ∈ E(G).
+% iff G is a unit interval graph.
+%edgeDom[U,V] :: edge(U,V) -> trackedSemiOrderDom[T,U,V] : trackedSemiOrder(T,U,V) | trackedSemiOrderDom[T,V,U] : trackedSemiOrder(T,V,U).
+%trackedSemiOrderDom[T,U,V] :: trackedSemiOrder(T,U,V) -> U < V : edge(U,V) | V < U : edge(V,U).
+
+edgeDom[U,V], trackedSemiOrderDom[T,U,V] :: cheat_absentedge(U,V) -> ~trackedSemiOrder(T,U,V).
+edgeDom[U,V], trackedSemiOrderDom[T,V,U] :: cheat_absentedge(U,V) -> ~trackedSemiOrder(T,V,U).
+edgeDom[U,V] :: cheat_absentedge(U,V) -> ~edge(U,V).
+edgeDom[U,V] :: cheat_spuriousedge(U,V) -> trackedSemiOrderDom[T,U,V] : trackedSemiOrder(T,U,V) | trackedSemiOrderDom[T,V,U] : trackedSemiOrder(T,V,U).
+edgeDom[U,V] :: cheat_spuriousedge(U,V) -> edge(U,V).
+
+% no C4
+vertex[U], vertex[V], vertex[W], vertex[X], U<V<W<X :: #ground cycleDom[U,V,W,X], cycleDom[U,V,X,W], cycleDom[U,W,V,X].
+cycleDom[U,V,W,X] :: edge(U,V)
+                   & edge(U,X)
+                   & V<W:edge(V,W) & W<V:edge(W,V)
+                   & W<X:edge(W,X) & X<W:edge(X,W)
+                  -> edge(U,W)
+                   | V<X:edge(V,X) | X<V:edge(X,V).
+
+% no K15
+vertex[V], vertex[W], vertex[X], vertex[Y], vertex[Z], V<W<X<Y<Z, vertex[U], U!=V, U!=W, U!=X, U!=Y, U!=Z :: #ground k15Dom[U,V,W,X,Y,Z].
+k15Dom[U,V,W,X,Y,Z] :: U<V:edge(U,V) & V<U:edge(V,U)
+                     & U<W:edge(U,W) & W<U:edge(W,U)
+                     & U<X:edge(U,X) & X<U:edge(X,U)
+                     & U<Y:edge(U,Y) & Y<U:edge(Y,U)
+                     & U<Z:edge(U,Z) & Z<U:edge(Z,U)
+                    -> edge(V,W) | edge(V,X) | edge(V,Y) | edge(V,Z)
+                     | edge(W,X) | edge(W,Y) | edge(W,Z)
+                     | edge(X,Y) | edge(X,Z)
+                     | edge(Y,Z).
+
+% complement graph has a transitive orientation.
+vertex[U], vertex[V], vertex[W], U<V<W :: ~edge(U,V) & ~edge(V,W) -> ~edge(U,W).
+
+edgeDom[U,V] :: #hide ~edge(U,V).

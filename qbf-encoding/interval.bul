@@ -1,0 +1,157 @@
+#ground nbVertices[6].
+#ground track[1..2].
+
+nbVertices[N] :: #ground vertex[1..N].
+
+vertex[U], vertex[V], U < V :: #ground edgeDom[U,V].
+
+edgeDom[U,V] :: #exists[0] edge(U,V).
+
+vertex[U], vertex[V], U!=V :: #ground semiOrderDom[U,V].
+track[T], semiOrderDom[U,V] :: #ground trackedSemiOrderDom[T,U,V].
+trackedSemiOrderDom[T,U,V] :: #forall[1] trackedSemiOrder(T,U,V).
+
+
+%Theorem 2.9 (Scott and Suppes [SS58]) A partial order relation S defined on V is a semiorder
+%if the following conditions hold:
+%1. S is irreflexive.
+%2. (x, y) ∈ S and (z, w) ∈ S imply (x, w) ∈ S or (z, y) ∈ S.
+%3. (x, y) ∈ S and (y, z) ∈ S imply (x, w) ∈ S or (w, z) ∈ S.
+
+track[T] :: #exists[2] cheat_SOTrack(T).
+cheat(semiorder) -> track[T] : cheat_SOTrack(T).
+%cheat_SOTrack(1).
+%~cheat_SOTrack(2).
+
+semiOrderDom[U,V] :: #exists[2] badSO(U,V).
+
+trackedSemiOrderDom[T,U,V] :: cheat_SOTrack(T) &  trackedSemiOrder(T,U,V) ->  badSO(U,V).
+%semiOrderDom[U,V] :: trackedSemiOrderDom[T,U,V] : trackedSemiOrder(T,U,V) <-  badSO(U,V).
+trackedSemiOrderDom[T,U,V] :: cheat_SOTrack(T) & ~trackedSemiOrder(T,U,V) -> ~badSO(U,V).
+
+semiOrderDom[U,V], U < V :: #ground cheat_asymmetryDom[U,V].
+cheat_asymmetryDom[U,V] :: #exists[2] cheat_asymmetry(U,V).
+%cheat_asymmetryDom[U,V] :: cheat_asymmetry(U,V) -> badSO(U,V).
+%cheat_asymmetryDom[U,V] :: cheat_asymmetry(U,V) -> badSO(V,U).
+%cheat(asymmetry)  -> cheat_asymmetryDom[U,V]    : cheat_asymmetry(U,V).
+
+#ground directTransitive[].
+
+directTransitive[], semiOrderDom[U,V], semiOrderDom[V,W], semiOrderDom[U,W] :: #ground cheat_transitiveDom[U,V,W].
+directTransitive[], cheat_transitiveDom[U,V,W] :: #exists[2] cheat_transitive(U,V,W).
+%directTransitive[], cheat_transitiveDom[U,V,W] :: cheat_transitive(U,V,W) ->  badSO(U,V).
+%directTransitive[], cheat_transitiveDom[U,V,W] :: cheat_transitive(U,V,W) ->  badSO(V,W).
+%directTransitive[], cheat_transitiveDom[U,V,W] :: cheat_transitive(U,V,W) -> ~badSO(U,W).
+%directTransitive[] :: cheat(transitive) -> cheat_transitiveDom[U,V,W] : cheat_transitive(U,V,W).
+
+~directTransitive[] :: #ground cheat_uTransitivePDom[1..3].
+~directTransitive[], semiOrderDom[U,V], semiOrderDom[V,W], semiOrderDom[U,W] :: #ground cheat_uTransitiveDom[1,U,V].
+~directTransitive[], semiOrderDom[U,V], semiOrderDom[V,W], semiOrderDom[U,W] :: #ground cheat_uTransitiveDom[2,V,W].
+~directTransitive[], semiOrderDom[U,V], semiOrderDom[V,W], semiOrderDom[U,W] :: #ground cheat_uTransitiveDom[3,U,W].
+~directTransitive[], cheat_uTransitiveDom[P,U,V] :: #exists[2] cheat_uTransitive(P,U,V).
+~directTransitive[], cheat_uTransitiveDom[1,U,V] :: cheat_uTransitive(1,U,V) ->  badSO(U,V).
+~directTransitive[], cheat_uTransitiveDom[2,V,W] :: cheat_uTransitive(2,V,W) ->  badSO(V,W).
+~directTransitive[], cheat_uTransitiveDom[3,U,W] :: cheat_uTransitive(3,U,W) -> ~badSO(U,W).
+~directTransitive[], cheat_uTransitivePDom[P] :: cheat(transitive) -> cheat_uTransitiveDom[P,U,V] : cheat_uTransitive(P,U,V).
+
+#ground directPatterns[].
+
+directPatterns[], semiOrderDom[U,V], semiOrderDom[W,X], semiOrderDom[U,W], semiOrderDom[U,X], semiOrderDom[V,W], semiOrderDom[V,X], U < W :: #ground cheat_twotwoDom[U,V,W,X].
+directPatterns[], cheat_twotwoDom[U,V,W,X] :: #exists[2] cheat_twotwo(U,V,W,X).
+%directPatterns[], cheat_twotwoDom[U,V,W,X] :: cheat_twotwo(U,V,W,X) ->  badSO(U,V).
+%directPatterns[], cheat_twotwoDom[U,V,W,X] :: cheat_twotwo(U,V,W,X) -> ~badSO(U,X).
+%directPatterns[], cheat_twotwoDom[U,V,W,X] :: cheat_twotwo(U,V,W,X) -> ~badSO(W,V).
+%directPatterns[], cheat_twotwoDom[U,V,W,X] :: cheat_twotwo(U,V,W,X) ->  badSO(W,X).
+%directPatterns[] :: cheat(twotwo)     -> cheat_twotwoDom[U,V,W,X]   : cheat_twotwo(U,V,W,X).
+
+directPatterns[], semiOrderDom[U,V], semiOrderDom[W,X], semiOrderDom[U,W], semiOrderDom[U,X], semiOrderDom[V,W], semiOrderDom[V,X] :: #ground cheat_threeoneDom[U,V,W,X].
+directPatterns[], cheat_threeoneDom[U,V,W,X] :: #exists[2] cheat_threeone(U,V,W,X).
+%directPatterns[], cheat_threeoneDom[U,V,W,X] :: cheat_threeone(U,V,W,X) ->  badSO(U,V).
+%directPatterns[], cheat_threeoneDom[U,V,W,X] :: cheat_threeone(U,V,W,X) -> ~badSO(U,X).
+%directPatterns[], cheat_threeoneDom[U,V,W,X] :: cheat_threeone(U,V,W,X) ->  badSO(V,W).
+%directPatterns[], cheat_threeoneDom[U,V,W,X] :: cheat_threeone(U,V,W,X) -> ~badSO(X,W).
+%directPatterns[] :: cheat(threeone)   -> cheat_threeoneDom[U,V,W,X] : cheat_threeone(U,V,W,X).
+
+~directPatterns[] :: #ground patternPosition[1..4].
+~directPatterns[], patternPosition[P], vertex[U] :: #ground cheat_SOPatternDom[P,U].
+~directPatterns[], cheat_SOPatternDom[P,U] :: #exists[2] cheat_SOPattern(P,U).
+~directPatterns[], semiOrderDom[U,V], cheat_SOPatternDom[1,U], cheat_SOPatternDom[2,V] ::                  cheat_SOPattern(1,U) & cheat_SOPattern(2,V) ->  badSO(U,V). % 1
+~directPatterns[], semiOrderDom[U,X], cheat_SOPatternDom[1,U], cheat_SOPatternDom[4,X] ::                  cheat_SOPattern(1,U) & cheat_SOPattern(4,X) -> ~badSO(U,X). % 2
+~directPatterns[], semiOrderDom[W,V], cheat_SOPatternDom[2,V], cheat_SOPatternDom[3,W] ::  cheat(twotwo) & cheat_SOPattern(2,V) & cheat_SOPattern(3,W) -> ~badSO(W,V). % 3
+~directPatterns[], semiOrderDom[W,X], cheat_SOPatternDom[3,W], cheat_SOPatternDom[4,X] ::  cheat(twotwo) & cheat_SOPattern(3,W) & cheat_SOPattern(4,X) ->  badSO(W,X). % 4
+~directPatterns[], semiOrderDom[V,W], cheat_SOPatternDom[2,V], cheat_SOPatternDom[3,W] :: ~cheat(twotwo) & cheat_SOPattern(2,V) & cheat_SOPattern(3,W) ->  badSO(V,W). % 3
+~directPatterns[], semiOrderDom[W,X], cheat_SOPatternDom[3,W], cheat_SOPatternDom[4,X] :: ~cheat(twotwo) & cheat_SOPattern(3,W) & cheat_SOPattern(4,X) -> ~badSO(W,X). % 4
+
+~directPatterns[], patternPosition[P] :: cheat(pattern) -> cheat_SOPatternDom[P,U] : cheat_SOPattern(P,U).
+
+#exists[2] cheat(asymmetry), cheat(transitive), cheat(pattern), cheat(semiorder), cheat(twotwo), cheat(threeone), cheat(edge).
+
+edgeDom[U,V] :: #exists[2] cheat_absentedge(U,V).
+edgeDom[U,V] :: #exists[2] cheat_spuriousedge(U,V).
+cheat(semiorder) | cheat(edge).
+cheat(semiorder) -> cheat(asymmetry) | cheat(transitive) | cheat(pattern).
+cheat(pattern)    -> cheat(twotwo) | cheat(threeone).
+cheat(edge)       -> edgeDom[U,V] : cheat_absentedge(U,V) | edgeDom[U,V] : cheat_spuriousedge(U,V).
+
+% Theorem 2.8 (Roberts [Rob69])
+% There is a semiorder on S(V, P ) on the vertices of V such that (u, w) ∈ P ⇔ (u, w) not ∈ E(G).
+% iff G is a unit interval graph.
+%edgeDom[U,V] :: edge(U,V) -> trackedSemiOrderDom[T,U,V] : trackedSemiOrder(T,U,V) | trackedSemiOrderDom[T,V,U] : trackedSemiOrder(T,V,U).
+%trackedSemiOrderDom[T,U,V] :: trackedSemiOrder(T,U,V) -> U < V : edge(U,V) | V < U : edge(V,U).
+
+edgeDom[U,V], trackedSemiOrderDom[T,U,V] :: cheat_absentedge(U,V) -> ~trackedSemiOrder(T,U,V).
+edgeDom[U,V], trackedSemiOrderDom[T,V,U] :: cheat_absentedge(U,V) -> ~trackedSemiOrder(T,V,U).
+edgeDom[U,V] :: cheat_absentedge(U,V) -> ~edge(U,V).
+edgeDom[U,V] :: cheat_spuriousedge(U,V) -> trackedSemiOrderDom[T,U,V] : trackedSemiOrder(T,U,V) | trackedSemiOrderDom[T,V,U] : trackedSemiOrder(T,V,U).
+edgeDom[U,V] :: cheat_spuriousedge(U,V) -> edge(U,V).
+
+% no C4
+edgeDom[U,V], edgeDom[V,W], edgeDom[W,X] :: #ground cycleDom[U,V,W,X].
+cycleDom[U,V,W,X] :: edge(U,V) & edge(U,X) & edge(V,W) & edge(W,X) -> edge(U,W) | edge(V,X). %UVWX 
+cycleDom[U,V,W,X] :: edge(U,V) & edge(U,W) & edge(V,X) & edge(W,X) -> edge(U,X) | edge(V,W). %UVXW
+cycleDom[U,V,W,X] :: edge(U,W) & edge(U,X) & edge(V,W) & edge(V,X) -> edge(U,V) | edge(W,X). %UWVX
+
+% complement graph has a transitive orientation.
+edgeDom[U,V] :: #exists[0] orientation(U,V), orientation(V,U).
+
+edgeDom[U,V] :: ~edge(U,V) ->  orientation(U,V) |  orientation(V,U).
+edgeDom[U,V] :: ~edge(U,V) -> ~orientation(U,V) | ~orientation(V,U).
+edgeDom[U,V] ::  edge(U,V) -> ~orientation(U,V).
+edgeDom[U,V] ::  edge(U,V) -> ~orientation(V,U).
+
+vertex[U], vertex[V], vertex[W], U!=V, U!=W, V!=W :: orientation(U,V) & orientation(V,W) ->  orientation(U,W).
+%edgeDom[U,V], edgeDom[V,W] :: orientation(U,V) & orientation(V,W) ->  orientation(U,W).
+%edgeDom[U,W], edgeDom[W,V] :: orientation(U,V) & orientation(V,W) ->  orientation(U,W).
+%edgeDom[V,U], edgeDom[U,W] :: orientation(U,V) & orientation(V,W) ->  orientation(U,W).
+%edgeDom[V,W], edgeDom[W,U] :: orientation(U,V) & orientation(V,W) ->  orientation(U,W).
+%edgeDom[W,U], edgeDom[U,V] :: orientation(U,V) & orientation(V,W) ->  orientation(U,W).
+%edgeDom[W,V], edgeDom[V,U] :: orientation(U,V) & orientation(V,W) ->  orientation(U,W).
+
+edgeDom[U,V] :: #hide ~edge(U,V), ~orientation(U,V), ~orientation(V,U).
+
+% no K15
+edgeDom[U,V], edgeDom[V,W], edgeDom[W,X], edgeDom[X,Y], edgeDom[Y,Z] :: #ground k15Dom[U,V,W,X,Y,Z].
+k15Dom[U,V,W,X,Y,Z] :: edge(U,V) & edge(U,W) & edge(U,X) & edge(U,Y) & edge(U,Z) -> edge(V,W) | edge(V,X) | edge(V,Y) | edge(V,Z)
+                                                                                  | edge(W,X) | edge(W,Y) | edge(W,Z)
+                                                                                  | edge(X,Y) | edge(X,Z)
+                                                                                  | edge(Y,Z).
+%k15Dom[U,V,W,X,Y,Z] :: edge(U,V) & edge(V,W) & edge(V,X) & edge(V,Y) & edge(V,Z) -> edge(U,W) | edge(U,X) | edge(U,Y) | edge(U,Z)
+%                                                                                  | edge(W,X) | edge(W,Y) | edge(W,Z)
+%                                                                                  | edge(X,Y) | edge(X,Z)
+%                                                                                  | edge(Y,Z).
+k15Dom[U,V,W,X,Y,Z] :: edge(U,W) & edge(V,W) & edge(W,X) & edge(W,Y) & edge(W,Z) -> edge(U,V) | edge(U,X) | edge(U,Y) | edge(U,Z)
+                                                                                  | edge(V,X) | edge(V,Y) | edge(V,Z)
+                                                                                  | edge(X,Y) | edge(X,Z)
+                                                                                  | edge(Y,Z).
+k15Dom[U,V,W,X,Y,Z] :: edge(U,X) & edge(V,X) & edge(W,X) & edge(X,Y) & edge(X,Z) -> edge(U,V) | edge(U,W) | edge(U,Y) | edge(U,Z)
+                                                                                  | edge(V,W) | edge(V,Y) | edge(V,Z)
+                                                                                  | edge(W,Y) | edge(W,Z)
+                                                                                  | edge(Y,Z).
+k15Dom[U,V,W,X,Y,Z] :: edge(U,Y) & edge(V,Y) & edge(W,Y) & edge(X,Y) & edge(Y,Z) -> edge(U,V) | edge(U,W) | edge(U,X) | edge(U,Z)
+                                                                                  | edge(V,W) | edge(V,X) | edge(V,Z)
+                                                                                  | edge(W,X) | edge(W,Z)
+                                                                                  | edge(X,Z).
+k15Dom[U,V,W,X,Y,Z] :: edge(U,Z) & edge(V,Z) & edge(W,Z) & edge(X,Z) & edge(Y,Z) -> edge(U,V) | edge(U,W) | edge(U,X) | edge(U,Y)
+                                                                                  | edge(V,W) | edge(V,X) | edge(V,Y)
+                                                                                  | edge(W,X) | edge(W,Y)
+                                                                                  | edge(X,Y).

@@ -1,0 +1,83 @@
+#ground nbVertices[6].
+#ground track[1..2].
+
+nbVertices[N] :: #ground vertex[1..N].
+
+vertex[U], vertex[V], U < V :: #ground edgeDom[U,V].
+
+edgeDom[U,V] :: #forall[0] edge(U,V).
+
+vertex[U], vertex[V], U!=V :: #ground semiOrderDom[U,V].
+track[T], semiOrderDom[U,V] :: #ground trackedSemiOrderDom[T,U,V].
+trackedSemiOrderDom[T,U,V] :: #exists[1] trackedSemiOrder(T,U,V).
+
+
+%Theorem 2.9 (Scott and Suppes [SS58]) A partial order relation S defined on V is a semiorder
+%if the following conditions hold:
+%1. S is irreflexive.
+%2. (x, y) ∈ S and (z, w) ∈ S imply (x, w) ∈ S or (z, y) ∈ S.
+%3. (x, y) ∈ S and (y, z) ∈ S imply (x, w) ∈ S or (w, z) ∈ S.
+
+  nocheat
+| cheat_orientationDom[U,V,W] : cheat_orientation(U,V,W)
+| cheat_cycleDom[U,V,W,X] : cheat_cycle(U,V,W,X)
+| cheat_k15Dom[U,V,W,X,Y,Z] : cheat_k15(U,V,W,X,Y,Z).
+#exists[1] nocheat.
+cheat_cycleDom[U,V,W,X] :: #exists[1] cheat_cycle(U,V,W,X).
+cheat_k15Dom[U,V,W,X,Y,Z] :: #exists[1] cheat_k15(U,V,W,X,Y,Z).
+cheat_orientationDom[U,V,W] :: #exists[1] cheat_orientation(U,V,W).
+
+
+% Theorem 2.8 (Roberts [Rob69])
+% There is a semiorder on S(V, P ) on the vertices of V such that (u, w) ∈ P ⇔ (u, w) not ∈ E(G).
+% iff G is a unit interval graph.
+%edgeDom[U,V] :: edge(U,V) -> trackedSemiOrderDom[T,U,V] : trackedSemiOrder(T,U,V) | trackedSemiOrderDom[T,V,U] : trackedSemiOrder(T,V,U).
+%trackedSemiOrderDom[T,U,V] :: trackedSemiOrder(T,U,V) -> U < V : edge(U,V) | V < U : edge(V,U).
+
+track[T], edgeDom[U,V] :: trackedSemiOrder(T,U,V) | trackedSemiOrder(T,V,U).
+trackedSemiOrderDom[T,U,V], trackedSemiOrderDom[T,V,W], trackedSemiOrderDom[T,U,W] :: trackedSemiOrder(T,U,V) & trackedSemiOrder(T,V,W) -> trackedSemiOrder(T,U,W).
+
+trackedSemiOrderDom[T,U,V], trackedSemiOrderDom[T,W,X], trackedSemiOrderDom[T,U,W], trackedSemiOrderDom[T,U,X], trackedSemiOrderDom[T,V,W], trackedSemiOrderDom[T,V,X], U < W ::
+trackedSemiOrder(T,U,V) & trackedSemiOrder(T,W,X) -> trackedSemiOrder(T,U,X) | trackedSemiOrder(T,W,V).
+
+trackedSemiOrderDom[T,U,V], trackedSemiOrderDom[T,W,X], trackedSemiOrderDom[T,U,W], trackedSemiOrderDom[T,U,X], trackedSemiOrderDom[T,V,W], trackedSemiOrderDom[T,V,X] ::
+trackedSemiOrder(T,U,V) & trackedSemiOrder(T,V,W) -> trackedSemiOrder(T,U,X) | trackedSemiOrder(T,X,W).
+
+edgeDom[U,V] :: nocheat & edge(U,V) -> trackedSemiOrderDom[T,U,V] : trackedSemiOrder(T,U,V) | trackedSemiOrderDom[T,V,U] : trackedSemiOrder(T,V,U).
+edgeDom[U,V], track[T] :: nocheat & trackedSemiOrder(T,U,V) -> edge(U,V).
+edgeDom[U,V], track[T] :: nocheat & trackedSemiOrder(T,V,U) -> edge(U,V).
+
+% no C4
+vertex[U], vertex[V], vertex[W], vertex[X], U<V<W<X :: #ground cheat_cycleDom[U,V,W,X], cheat_cycleDom[U,V,X,W], cheat_cycleDom[U,W,V,X].
+cheat_cycleDom[U,V,W,X] :: cheat_cycle(U,V,W,X) ->  edge(U,V).
+%cheat_cycleDom[U,V,W,X] :: cheat_cycle(U,V,W,X) -> V<W: edge(V,W) | W<V: edge(W,V).
+%cheat_cycleDom[U,V,W,X] :: cheat_cycle(U,V,W,X) -> W<X: edge(W,X) | X<W: edge(X,W).
+%cheat_cycleDom[U,V,W,X] :: cheat_cycle(U,V,W,X) ->  edge(U,X).
+%cheat_cycleDom[U,V,W,X] :: cheat_cycle(U,V,W,X) -> ~edge(U,W).
+%cheat_cycleDom[U,V,W,X] :: cheat_cycle(U,V,W,X) -> ~edge(V,X).
+
+% complement graph has a transitive orientation.
+vertex[U], vertex[V], vertex[W], U<V<W :: #ground cheat_orientationDom[U,V,W].
+cheat_orientationDom[U,V,W] :: cheat_orientation(U,V,W) -> ~edge(U,V).
+cheat_orientationDom[U,V,W] :: cheat_orientation(U,V,W) -> ~edge(V,W).
+cheat_orientationDom[U,V,W] :: cheat_orientation(U,V,W) ->  edge(U,W).
+
+% no K15
+vertex[V], vertex[W], vertex[X], vertex[Y], vertex[Z], V<W<X<Y<Z, vertex[U], U!=V, U!=W, U!=X, U!=Y, U!=Z :: #ground cheat_k15Dom[U,V,W,X,Y,Z].
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> U<V:edge(U,V) | V<U:edge(V,U).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> U<W:edge(U,W) | W<U:edge(W,U).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> U<X:edge(U,X) | X<U:edge(X,U).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> U<Y:edge(U,Y) | Y<U:edge(Y,U).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> U<Z:edge(U,Z) | Z<U:edge(Z,U).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(V,W).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(V,X).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(V,Y).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(V,Z).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(W,X).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(W,Y).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(W,Z).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(X,Y).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(X,Z).
+cheat_k15Dom[U,V,W,X,Y,Z] :: cheat_k15(U,V,W,X,Y,Z) -> ~edge(Y,Z).
+
+edgeDom[U,V] :: #hide ~edge(U,V).
