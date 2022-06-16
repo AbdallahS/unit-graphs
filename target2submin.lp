@@ -24,9 +24,13 @@ pedge(16,17).  pedge(17,18).
 edge(U,V) :- pedge(U,V), vertex(U), vertex(V), U < V.
 edge(V,U) :- pedge(U,V), vertex(U), vertex(V), U > V.
 
-vertex(1..N) :- nbVertices(N).
+%vertex(1..N) :- nbVertices(N).
+pvertex(1..N) :- nbVertices(N).
+vertex(V) :- pvertex(V), V != 12, V!=14, V!=15.
 
 cliqueNumber(5) :- nbVertices(N), N <= 18.
 cliqueNumber(6) :- nbVertices(N), N > 18.
 
 nbVertices(20).
+
+#show.

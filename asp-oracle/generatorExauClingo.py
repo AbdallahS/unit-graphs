@@ -107,7 +107,7 @@ def doit():
             for j in range(first+1,second):
                 G.add_edge(i,arr[j])
 
-        print("NB ", nbTested, "line", lnb, "initial array ", arr)
+        print("NB {:5} line {:5} initial array {}".format(nbTested, lnb, arr), end=' ')
         nbTested+=1
 
         #G2 = nx.Graph()
@@ -124,6 +124,7 @@ def doit():
                 print(False)
                 assert(False)
             else:
+                pass
                 print(True)
                 #print(edges)
             #assert(False)

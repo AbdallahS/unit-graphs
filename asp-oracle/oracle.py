@@ -11,12 +11,14 @@ def storeModel(model,output):
             ev = atom.arguments[1]
             output.append((str(eu),str(ev)))
 
-with open("semiorder.lp",'r') as f:
+#with open("semiorder.lp",'r') as f:
+#with open("semiorder-faster.lp",'r') as f:
+with open("semiorder-fastest.lp",'r') as f:
     storedConstraints = f.read()
 def collectDefaultConstraints():
-    with open("semiorder.lp",'r') as f:
+#    with open("semiorder.lp",'r') as f:
 #        total = f.read()
-        total = storedConstraints
+    total = storedConstraints
     return total
 
 def computeSchedule(graph):
