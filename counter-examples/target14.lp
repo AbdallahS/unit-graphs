@@ -44,10 +44,10 @@ pedge(10,11).
 pedge(10,12).
 pedge(12,13).
 pedge(12,14).
-edge(U,V) :- pedge(U,V), vertex(U), vertex(V), U < V, not bad(U,V).
-edge(V,U) :- pedge(U,V), vertex(U), vertex(V), U > V, not bad(U,V).
+edge(U,V) :- pedge(U,V), vertex(U), vertex(V), U < V.
+edge(V,U) :- pedge(U,V), vertex(U), vertex(V), U > V.
 vertex(1..N) :- nbVertices(N).
-%nbVertices(14).
-%vertex(1;2;4..N) :- nbVertices(N).
 nbVertices(14).
-5 { bad(U,V) : pedge(U,V) } 5. #show bad/2.
+%edge(U,V) :- pedge(U,V), vertex(U), vertex(V), U < V, not bad(U,V).
+%edge(V,U) :- pedge(U,V), vertex(U), vertex(V), U > V, not bad(U,V).
+%5 { bad(U,V) : pedge(U,V) } 5. #show bad/2.
