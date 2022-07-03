@@ -121,6 +121,7 @@ def doit():
             graph = generateClingoGraph(G)
             edges = oracle.computeSchedule(graph)
             if edges == False:
+                print(graph)
                 print(False)
                 assert(False)
             else:
