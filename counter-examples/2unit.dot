@@ -1,0 +1,112 @@
+graph test123 {
+  overlap=scale;
+  splines=true;
+  layout=fdp;
+
+//  layout=neato;
+//  mode=KK;
+//  model=subset;
+//  epsilon=0.001;
+//  start=7;
+
+//  layout=fdp;
+//  maxiter=100;
+//  K=0.5;
+
+  subgraph cluster01 {
+  v01x [label="01"];
+  v01y [label="01"];
+  }
+  subgraph cluster02 {
+  v02x [label="02"];
+  v02y [label="02"];
+  }
+//  subgraph cluster03 {
+  v03x [label="03"];
+//  v03y [label="03"];
+//  }
+  subgraph cluster04 {
+  v04x [label="04"];
+  v04y [label="04"];
+  }
+  subgraph cluster05 {
+  v05x [label="05"];
+  v05y [label="05"];
+  }
+  subgraph cluster06 {
+  v06x [label="06"];
+  v06y [label="06"];
+  }
+  subgraph cluster07 {
+  v07x [label="07"];
+  v07y [label="07"];
+  }
+  subgraph cluster08 {
+  v08x [label="08"];
+  v08y [label="08"];
+  }
+//  subgraph cluster09 {
+  v09x [label="09"];
+//  v09y [label="09"];
+//  }
+  subgraph cluster10 {
+  v10x [label="10"];
+  v10y [label="10"];
+  }
+//  subgraph cluster11 {
+  v11x [label="11"];
+//  v11y [label="11"];
+//  }
+  subgraph cluster12 {
+  v12x [label="12"];
+  v12y [label="12"];
+  }
+  subgraph cluster13 {
+  v13x [label="13"];
+  v13y [label="13"];
+  }
+//  subgraph cluster14 {
+//  v14x [label="14"];
+  v14y [label="14"];
+//  }
+
+  v01x -- v02y;
+  v01y -- v03x;
+  v01y -- v04x;
+  v01x -- v05y;
+  v01x -- v06x;
+  v01y -- v07x;
+  v01x -- v08y;
+  v01x -- v10y;
+  v02x -- v04x;
+  v02y -- v05y;
+  v02x -- v06y;
+  v02y -- v06x;
+  v02y -- v08y;
+  v04y -- v05y;
+  v04x -- v06y;
+  v04x -- v07x;
+  v04y -- v08y;
+  v04y -- v10y;
+  v04y -- v11x;
+  v04y -- v12y;
+  v04y -- v13x;
+  v05x -- v10x;
+  v05x -- v12x;
+  v05x -- v07y;
+  v05y -- v06x;
+  v05y -- v11x;
+  v05y -- v08y;
+  v05y -- v10y;
+  v08y -- v10y;
+  v08y -- v11x;
+  v08x -- v12y;
+  v08x -- v13y;
+  v08x -- v14y;
+  v09x -- v12x;
+  v10y -- v11x;
+  v10x -- v12x;
+  v12y -- v13x;
+  v12y -- v14y;
+
+}
