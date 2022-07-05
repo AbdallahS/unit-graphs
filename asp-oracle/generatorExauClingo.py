@@ -54,6 +54,7 @@ def doit():
     lines = graphfile+".tries"
     startat=0
 
+
     try:
         linefile = open(lines,'r')
         startat = int(linefile.read())
@@ -75,9 +76,9 @@ def doit():
     lnb = -1
     for l in f:
         lnb += 1
-        if lnb >= 100:
-            print(time.time() - startTime)
-            assert(False)
+        #if lnb >= 100:
+        #    print(time.time() - startTime)
+        #    assert(False)
         #to start from where we were...
         if lnb < startat:
             continue
@@ -123,7 +124,11 @@ def doit():
             if edges == False:
                 print(graph)
                 print(False)
-                assert(False)
+                candidates = open(graphfile+".candidates", "a")
+                candidates.write(l)
+                candidates.close()
+                #assert(False)
+
             else:
                 pass
                 print(True)
@@ -131,6 +136,7 @@ def doit():
             #assert(False)
         else:
             print("has a 5 claw, continue")
+        
 
 
 
