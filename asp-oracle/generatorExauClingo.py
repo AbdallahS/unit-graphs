@@ -6,13 +6,13 @@ import time
 
 import oracle
 
+#interval graph files can be downloaded here
 #http://www.jaist.ac.jp/~uehara/graphs/
 
+#need a file with all interval graphs (of a given size)
 if len(sys.argv) < 2:
     print("Usage python3 script fileWithIntervalGraphs")
     sys.exit()
-
-#f = open("interval_disconnected_9.txt", "r")
 
 def has5Claw(G):
     #is there a 5-clique in the complement of the neighborood
@@ -21,18 +21,6 @@ def has5Claw(G):
         compl = nx.complement(G.subgraph(neib))
         for clique in nx.enumerate_all_cliques(compl):
             if len(clique) > 4:
-                #print clique
-                print(n, " creates claw", clique)
-                return True
-    return False
-
-def has4Claw(G):
-    #is there a 5-clique in the complement of the neighborood
-    for n in G.nodes():
-        neib = list(G[n])
-        compl = nx.complement(G.subgraph(neib))
-        for clique in nx.enumerate_all_cliques(compl):
-            if len(clique) > 3:
                 #print clique
                 print(n, " creates claw", clique)
                 return True
@@ -54,7 +42,6 @@ def doit():
     lines = graphfile+".tries"
     startat=0
 
-
     try:
         linefile = open(lines,'r')
         startat = int(linefile.read())
@@ -64,10 +51,8 @@ def doit():
     except IOError:
         linefile = open(lines,"w")
 
-
     linefile.write(str(startat))
     linefile.close()
-
 
     f = open(graphfile, "r")
 
@@ -76,10 +61,6 @@ def doit():
     lnb = -1
     for l in f:
         lnb += 1
-        #if lnb >= 100:
-        #    print(time.time() - startTime)
-        #    assert(False)
-        #to start from where we were...
         if lnb < startat:
             continue
         #store where we were every 200 graphs
@@ -111,14 +92,7 @@ def doit():
         print("NB {:5} line {:5} initial array {}".format(nbTested, lnb, arr), end=' ')
         nbTested+=1
 
-        #G2 = nx.Graph()
-
-
         if not has5Claw(G) and len(G.edges())>0:
-        #if not has4Claw(G) and len(G.edges())>0:
-            #print("WILL SOLVE !", G.edges())
-            #if not solve(G):
-
             graph = generateClingoGraph(G)
             edges = oracle.computeSchedule(graph)
             if edges == False:
@@ -127,17 +101,11 @@ def doit():
                 candidates = open(graphfile+".candidates", "a")
                 candidates.write(l)
                 candidates.close()
-                #assert(False)
 
             else:
                 pass
                 print(True)
-                #print(edges)
-            #assert(False)
         else:
             print("has a 5 claw, continue")
-        
-
-
 
 doit()
