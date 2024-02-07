@@ -15,7 +15,7 @@ To run the code run the following command:
 python3 generatorExauClingo.py graph_file.txt
 ```
 
-The graph_file.txt must contain a list of graphs in the format described in http://www.jaist.ac.jp/~uehara/graphs/ .  
+The graph_file.txt must contain a list of interval graphs in the format described in http://www.jaist.ac.jp/~uehara/graphs/ .  
 That is, each interval graph is represented in one line in a simple text format, e.g., 1 1 2 2 3 3 (independent set of three vertices), 1 2 1 3 2 3 (path of length 3), 1 2 3 3 2 1 (complete graph of size 3). 
 
 **Output**  
