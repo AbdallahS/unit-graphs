@@ -1,4 +1,4 @@
-**Unit 2-interval graph checker**  
+<h1> Unit 2-interval graph checker  </h1>
 
 This python script checks if a given interval graph is a unit 2-interval graph using an encoding in answer set programming.
 
